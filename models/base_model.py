@@ -1,4 +1,4 @@
-#1/usr/bin/env python3
+#!/usr/bin/env python3
 """DEFINES THE BASE CLASS FOR ALL ALL THE
 OTHER CLASSES
 """
@@ -6,9 +6,9 @@ import uuid
 from datetime import datetime
 from models import storage
 
+
 class BaseModel:
     """THE BaseModel CLASS"""
-    
     def __init__(self, *args, **kwargs):
         """INSTANCE CONSTRUCTOR
             ARGS:
@@ -16,7 +16,7 @@ class BaseModel:
                 id (string): user id
                 craeted_at: the time the user craete the account
                 updated_at: the time the user updated the account
-        """ 
+        """
         if not kwargs:
             self.id = str(uuid.uuid4())
             self.created_at = datetime.now()
@@ -29,19 +29,22 @@ class BaseModel:
                         result = value
                         date, time = result.split('T')
                         year, month, day = date.split('-')
-                        hour, minute, second= time.split(':')
+                        hour, minute, second = time.split(':')
                         main_sec, microsec = second.split('.')
-                        self.__dict__[key] = datetime(int(year),
-                                int(month), int(day), int(hour),
-                                int(minute), int(main_sec), int(microsec))
+                        self.__dict__[key] = datetime(
+                                int(year), int(month), int(day),
+                                int(hour), int(minute), int(main_sec),
+                                int(microsec)
+                                )
                     else:
                         self.__dict__[key] = value
+
     def __str__(self):
         """string representation of an object"""
         return f"[{__class__.__name__}] ({self.id}) {self.__dict__}"
 
     def save(self):
-        """updates the public instance attribute 
+        """updates the public instance attribute
         updated_at with the current datetime
         """
         self.updated_at = datetime.now()
@@ -49,8 +52,9 @@ class BaseModel:
         storage.save()
 
     def to_dict(self):
-        """ returns a dictionary containing 
-        all keys/values of __dict__ of the instance"""
+        """ returns a dictionary containing
+        all keys/values of __dict__ of the instance
+        """
         tmp_created = self.created_at
         tmp_updated = self.updated_at
         self.created_at = self.created_at.isoformat()
