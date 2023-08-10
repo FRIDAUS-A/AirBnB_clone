@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 """DEFINES THE BASE CLASS FOR ALL ALL THE
 OTHER CLASSES
 """
