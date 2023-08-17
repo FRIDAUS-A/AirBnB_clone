@@ -41,7 +41,7 @@ class BaseModel:
 
     def __str__(self):
         """string representation of an object"""
-        return f"[{__class__.__name__}] ({self.id}) {self.__dict__}"
+        return f"[{self.__class__.__name__}] ({self.id}) {self.__dict__}"
 
     def save(self):
         """updates the public instance attribute
@@ -63,7 +63,7 @@ class BaseModel:
         dic = {}
         for key, value in instance.items():
             dic[key] = value
-        dic["__class__"] = __class__.__name__
+        dic["__class__"] = self.__class__.__name__
         self.created_at = tmp_created
         self.updated_at = tmp_updated
         return dic
