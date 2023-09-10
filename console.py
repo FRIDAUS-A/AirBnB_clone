@@ -125,7 +125,7 @@ class HBNBCommand(cmd.Cmd):
             if signal == "yes":
                 content.pop(key_value)
             else:
-                print("** instance id missing **")
+                print("** no instance found **")
                 return
             storage.save()
 
