@@ -81,7 +81,7 @@ class HBNBCommand(cmd.Cmd):
         if not args:
             print("** class name missing **")
             return;
-        elif arg[0] not in classes and len(arg) == 1:
+        elif arg[0] not in classes:
             print("** class doesn't exist **")
             return
         elif len(arg) == 1:
@@ -169,7 +169,7 @@ class HBNBCommand(cmd.Cmd):
         if not args:
             print("** class name missing **")
             return
-        elif arg[0] not in classes and len(arg) == 1:
+        elif arg[0] not in classes:
             print("** class doesn't exist **")
             return
         elif len(arg) == 1:
