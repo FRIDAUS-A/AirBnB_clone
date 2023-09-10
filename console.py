@@ -4,12 +4,29 @@ the entry point of the command interpreter
 """
 
 import cmd
+import re
 from models.base_model import BaseModel
 from models.user import User
+from models.review import Review
+from models.state import State
+from models.city import City
+from models.user import User
+from models.amenity import Amenity
+from models.place import Place
 import json
 from models import storage
 
-arr = ("User", "BaseModel")
+classes = {"BaseModel": BaseModel,
+            "User": User,
+            "Review": Review,
+            "State": State,
+            "City": City,
+            "Place": Place,
+            "Amenity": Amenity}
+regex = [r'^(\w+)\.(\w+)\(\)$',
+        r'^(\w+)\.(\w+)\("(.*?)"\)$',
+        r'^(\w+)\.(\w+)\("(.*?)",\s"(.*?)",\s([0-9]*?)\)$']
+
 class HBNBCommand(cmd.Cmd):
     prompt = "(hbnb) "
 
@@ -17,15 +34,38 @@ class HBNBCommand(cmd.Cmd):
         """Quit command to exit the program"""
         return True
 
+    def precmd(self, line):
+        """Execute befor the onecmd"""
+        match = None
+        index = 0
+        while match is None and index < len(regex):
+            match = re.match(regex[index], line)
+            index += 1
+        if match and index == 1:
+            tmp_list = list(match.groups())
+            tmp_list.reverse()
+            line = " ".join(tmp_list)
+        elif match and index == 2:
+            tmp_list = list(match.groups())
+            name = tmp_list[0]
+            tmp_list.pop(0)
+            tmp_list.insert(1, name)
+            line = " ".join(tmp_list)
+        elif match and (index == 3 or index == 4) :
+            tmp_list = list(match.groups())
+            name = tmp_list[0]
+            tmp_list.pop(0)
+            tmp_list.insert(1, name)
+            print(tmp_list)
+            line = " ".join(tmp_list)
+        return cmd.Cmd.precmd(self, line)
     def do_create(self, line):
         """Creates a new instance of BaseModel"""
-        if line == "User":
-            line = User()
-        elif line == "BaseModel":
-            line = BaseModel()
+        if line in classes:
+            line = classes[line]()
         elif not line:
             print("** class name missing **")
-        elif line not in arr:
+        elif line not in classes:
             print("** class doesn't exist **")
         line.save()
         print(line.id)
@@ -38,7 +78,7 @@ class HBNBCommand(cmd.Cmd):
             arg = args.split()
         if not args:
             print("** class name missing **")
-        elif arg[0] not in arr and len(arg) == 1:
+        elif arg[0] not in classes and len(arg) == 1:
             print("** class doesn't exist **")
         elif len(arg) == 1:
             print("** instance id missing **")
@@ -47,10 +87,7 @@ class HBNBCommand(cmd.Cmd):
             tmp_model = None
             for key, value in content.items():
                 if arg[1] == value.to_dict()["id"]:
-                    if arg[0] == "User":
-                        tmp_model = User(**(value.to_dict()))
-                    elif arg[0] == "BaseModel":
-                        tmp_model = BaseModel(**(value.to_dict()))
+                        tmp_model = classes[arg[0]](**(value.to_dict()))
             if not tmp_model:
                 print("** no instance found **")
             else:
@@ -65,7 +102,7 @@ class HBNBCommand(cmd.Cmd):
             arg = args.split()
         if not args:
             print("** class name missing **")
-        elif arg[0] not in arr and len(arg) == 1:
+        elif arg[0] not in classes and len(arg) == 1:
             print("** class doesn't exist **")
         elif len(arg) == 1:
             print("** instance id missing **")
@@ -92,16 +129,14 @@ class HBNBCommand(cmd.Cmd):
         Prints all string representation of all 
         instances based or not on the class name.
         """
-        if line not in arr:
+        if line not in classes:
             print("** class doesn't exist **")
         else:
             all_list = []
             content = storage.all()
             for value in content.values():
-                if line == "User":
-                    all_list.append(User(**(value.to_dict())).__str__())
-                if line == "BaseModel":
-                    all_list.append(BaseModel(**(value.to_dict())).__str__())
+                if value.to_dict()["__class__"] == line:
+                    all_list.append(classes[line](**(value.to_dict())).__str__())
             print(all_list)
 
     def do_update(self, args):
@@ -115,7 +150,7 @@ class HBNBCommand(cmd.Cmd):
         if not args:
             print("** class name missing **")
             return
-        elif arg[0] not in arr and len(arg) == 1:
+        elif arg[0] not in classes and len(arg) == 1:
             print("** class doesn't exist **")
             return
         elif len(arg) == 1:
@@ -139,8 +174,17 @@ class HBNBCommand(cmd.Cmd):
             for key, value in content.items():
                 if arg[1] == value.to_dict()["id"]:
                     kwargs = value.to_dict()
-                    kwargs[arg[2]] = arg[3]
-                    content[key] = User(**kwargs)
+                    tmp = arg[3]
+                    if (tmp[0] == "\""):
+                        kwargs[arg[2]] = tmp[1:-1]
+                    else:
+                        kwargs[arg[2]] = int(tmp)
+                    content[key] = classes[arg[0]](**kwargs)
             storage.save()
+
+    def do_EOF(self, line):
+        """quit with ctrl-D is presswd"""
+        return (True)
+
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
