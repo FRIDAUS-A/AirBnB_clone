@@ -63,12 +63,12 @@ class HBNBCommand(cmd.Cmd):
         """Creates a new instance of BaseModel"""
         if not line:
             print("** class name missing **")
-            exit()
+            return
         if line in classes:
             line = classes[line]()
         elif line not in classes:
             print("** class doesn't exist **")
-            exit()
+            return
         line.save()
         print(line.id)
 
@@ -80,13 +80,13 @@ class HBNBCommand(cmd.Cmd):
             arg = args.split()
         if not args:
             print("** class name missing **")
-            exit()
+            return;
         elif arg[0] not in classes and len(arg) == 1:
             print("** class doesn't exist **")
-            exit()
+            return
         elif len(arg) == 1:
             print("** instance id missing **")
-            exit()
+            return
         else:
             content = storage.all()
             tmp_model = None
@@ -95,7 +95,7 @@ class HBNBCommand(cmd.Cmd):
                         tmp_model = classes[arg[0]](**(value.to_dict()))
             if not tmp_model:
                 print("** no instance found **")
-                exit()
+                return
             else:
                 print(tmp_model)
 
@@ -108,13 +108,13 @@ class HBNBCommand(cmd.Cmd):
             arg = args.split()
         if not args:
             print("** class name missing **")
-            exit()
+            return
         elif arg[0] not in classes and len(arg) == 1:
             print("** class doesn't exist **")
-            exit()
+            return
         elif len(arg) == 1:
             print("** instance id missing **")
-            exit()
+            return
         else:
             content = storage.all()
             signal = None
@@ -140,7 +140,7 @@ class HBNBCommand(cmd.Cmd):
         """
         if line not in classes:
             print("** class doesn't exist **")
-            exit()
+            return
         else:
             all_list = []
             content = storage.all()
