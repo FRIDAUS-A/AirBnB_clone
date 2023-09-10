@@ -24,6 +24,7 @@ classes = {"BaseModel": BaseModel,
             "Place": Place,
             "Amenity": Amenity}
 regex = [r'^(\w+)\.(\w+)\(\)$',
+        r'^(\w+)\.(\w+)\("(.*?)",\s"(.*?)",\s(".*?")\)$',
         r'^(\w+)\.(\w+)\("(.*?)"\)$',
         r'^(\w+)\.(\w+)\("(.*?)",\s"(.*?)",\s([0-9]*?)\)$']
 
@@ -45,18 +46,17 @@ class HBNBCommand(cmd.Cmd):
             tmp_list = list(match.groups())
             tmp_list.reverse()
             line = " ".join(tmp_list)
-        elif match and index == 2:
+        elif match and index == 3:
             tmp_list = list(match.groups())
             name = tmp_list[0]
             tmp_list.pop(0)
             tmp_list.insert(1, name)
             line = " ".join(tmp_list)
-        elif match and (index == 3 or index == 4) :
+        elif match and (index == 2 or index == 4) :
             tmp_list = list(match.groups())
             name = tmp_list[0]
             tmp_list.pop(0)
             tmp_list.insert(1, name)
-            print(tmp_list)
             line = " ".join(tmp_list)
         return cmd.Cmd.precmd(self, line)
     def do_create(self, line):
