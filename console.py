@@ -209,5 +209,14 @@ class HBNBCommand(cmd.Cmd):
         """Defines what happens when a line is empty"""
         pass
 
+    def do_count(self, line):
+        """retrieve the number of instances of a class: <class name>.count()."""
+        content = storage.all()
+        all_list = []
+        for value in content.values():
+            if value.to_dict()["__class__"] == line:
+                all_list.append(classes[line](**(value.to_dict())).__str__())
+        print(len(all_list))
+
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
