@@ -186,5 +186,9 @@ class HBNBCommand(cmd.Cmd):
         """quit with ctrl-D is presswd"""
         return (True)
 
+    def emptyline(self):
+        """Defines what happens when a line is empty"""
+        pass
+
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
