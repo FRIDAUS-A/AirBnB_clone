@@ -124,6 +124,9 @@ class HBNBCommand(cmd.Cmd):
                     key_value = key
             if signal == "yes":
                 content.pop(key_value)
+            else:
+                print("** instance id missing **")
+                return
             storage.save()
 
     def do_clear(self, line):
