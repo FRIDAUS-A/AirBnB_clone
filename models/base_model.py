@@ -9,6 +9,7 @@ from models import storage
 
 class BaseModel:
     """THE BaseModel CLASS"""
+
     def __init__(self, *args, **kwargs):
         """INSTANCE CONSTRUCTOR
             ARGS:

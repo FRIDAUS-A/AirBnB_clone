@@ -22,8 +22,6 @@ class FileStorage():
     
     def new(self, obj):
         """sets in __objects the obj with key <obj class name>.id"""
-        from models.user import User
-        obj = User(**obj)
         key = f"{obj.__class__.__name__}.{obj.id}"
         FileStorage.__objects[key] = obj
         return
@@ -32,12 +30,31 @@ class FileStorage():
         """serializes __objects to the JSON file (path: __file_path)"""
         new_dict = {}
         for key, value in FileStorage.__objects.items():
-            new_dict[key] =value.to_dict()
+            new_dict[key] = value.to_dict()
         try:
             with open(FileStorage.__file_path, "w") as file:
                 file.write(json.dumps(new_dict))
         except FileNotFoundError:
             return
+
+    def classes(self):
+        """Returns a dictionary of  valid classes and their references"""
+        from models.base_model import BaseModel
+        from models.user import User
+        from models.place import Place
+        from models.state import State
+        from models.city import City
+        from models.amenity import Amenity
+        from models.review import Review
+
+        classes = {"BaseModel": BaseModel,
+                    "User": User,
+                    "Place": Place,
+                    "State": State,
+                    "City": City,
+                    "Amenity": Amenity,
+                    "Review": Review}
+        return classes
 
 
     def reload(self):
@@ -45,12 +62,11 @@ class FileStorage():
         deserializes the JSON file to __objects (only if the JSON file (__file_path) exists ; 
         otherwise, do nothing. If the file doesn’t exist, no exception should be raised)
         """
-        from models.user import User
         try:
             with open(FileStorage.__file_path, "r") as file:
                 content = file.read()
                 content = json.loads(content)
                 for key, value in content.items():
-                    FileStorage.__objects[key] = User(**value)
+                    FileStorage.__objects[key] = self.classes()[value["__class__"]](**value)
         except FileNotFoundError:
             return
