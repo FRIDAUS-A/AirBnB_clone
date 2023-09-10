@@ -141,7 +141,13 @@ class HBNBCommand(cmd.Cmd):
         Prints all string representation of all 
         instances based or not on the class name.
         """
-        if line not in classes:
+        if not line:
+            all_list = []
+            content = storage.all()
+            for value in content.values():
+                all_list.append(classes[value.to_dict()["__class__"]]
+                        (**(value.to_dict())).__str__())
+        elif line not in classes:
             print("** class doesn't exist **")
             return
         else:
@@ -150,7 +156,7 @@ class HBNBCommand(cmd.Cmd):
             for value in content.values():
                 if value.to_dict()["__class__"] == line:
                     all_list.append(classes[line](**(value.to_dict())).__str__())
-            print(all_list)
+        print(all_list)
 
     def do_update(self, args):
         """
