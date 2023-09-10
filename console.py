@@ -61,12 +61,14 @@ class HBNBCommand(cmd.Cmd):
         return cmd.Cmd.precmd(self, line)
     def do_create(self, line):
         """Creates a new instance of BaseModel"""
+        if not line:
+            print("** class name missing **")
+            exit()
         if line in classes:
             line = classes[line]()
-        elif not line:
-            print("** class name missing **")
         elif line not in classes:
             print("** class doesn't exist **")
+            exit()
         line.save()
         print(line.id)
 
@@ -78,10 +80,13 @@ class HBNBCommand(cmd.Cmd):
             arg = args.split()
         if not args:
             print("** class name missing **")
+            exit()
         elif arg[0] not in classes and len(arg) == 1:
             print("** class doesn't exist **")
+            exit()
         elif len(arg) == 1:
             print("** instance id missing **")
+            exit()
         else:
             content = storage.all()
             tmp_model = None
@@ -90,6 +95,7 @@ class HBNBCommand(cmd.Cmd):
                         tmp_model = classes[arg[0]](**(value.to_dict()))
             if not tmp_model:
                 print("** no instance found **")
+                exit()
             else:
                 print(tmp_model)
 
@@ -102,10 +108,13 @@ class HBNBCommand(cmd.Cmd):
             arg = args.split()
         if not args:
             print("** class name missing **")
+            exit()
         elif arg[0] not in classes and len(arg) == 1:
             print("** class doesn't exist **")
+            exit()
         elif len(arg) == 1:
             print("** instance id missing **")
+            exit()
         else:
             content = storage.all()
             signal = None
@@ -131,6 +140,7 @@ class HBNBCommand(cmd.Cmd):
         """
         if line not in classes:
             print("** class doesn't exist **")
+            exit()
         else:
             all_list = []
             content = storage.all()
