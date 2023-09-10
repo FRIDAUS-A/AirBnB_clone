@@ -2,7 +2,7 @@
 """Test cases for the BaseModel class"""
 
 import unittest
-from base_model import BaseModel
+from models.base_model import BaseModel
 
 class Test_BaseModel(unittest.TestCase):
     """Testcase class for the BaseModel class"""
