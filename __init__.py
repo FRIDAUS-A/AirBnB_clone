@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 """INIT FILE"""
 
 from models.engine.file_storage import FileStorage
